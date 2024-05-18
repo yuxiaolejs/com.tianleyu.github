@@ -6,7 +6,7 @@
     <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
     <groupId>com.tianleyu</groupId>
     <artifactId>github</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>github</name>
     <description>A tool for accessing Github API</description>
     <url>http://tianle.com/github</url>

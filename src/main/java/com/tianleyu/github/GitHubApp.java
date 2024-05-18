@@ -25,7 +25,7 @@ public class GitHubApp {
             throw new GitHubAppException("Organization not found");
         }
         JSONObject json = new JSONObject(resp.body());
-        return new GitHubAppOrg(this, org, json.getString("id"));
+        return new GitHubAppOrg(this, org, json.getInt("id") + "");
     }
 
     public HttpResponse<String> get(String url)
