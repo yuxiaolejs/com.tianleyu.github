@@ -54,15 +54,15 @@ public class GitHubAppOrg {
         checkAccessTokenExpiration();
         return Utils.post(url, body, accessToken, client);
     }
-    
+
     // Begin actual biz code
 
-    public String inviteUserToThisOrg(String username) {
+    public String inviteUserToThisOrg(Integer userId) {
         JSONObject body = new JSONObject();
-        body.put("invitee_id", username);
+        body.put("invitee_id", userId);
         HttpResponse<String> resp = post("/orgs/" + orgId + "/invitations", body);
         if (resp.statusCode() != 201) {
-            throw new GitHubAppException("Failed to invite user to org");
+            throw new GitHubAppException("Failed to invite user to org: " + resp.body());
         }
         return resp.body();
     }
