@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tianleyu</groupId>
     <artifactId>github</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>github</name>
     <description>A tool for accessing Github API</description>
     <url>http://tianle.com/github</url>
