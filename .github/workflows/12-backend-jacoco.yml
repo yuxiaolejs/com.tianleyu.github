@@ -8,7 +8,6 @@ on:
   pull_request:
     paths: [src/**, pom.xml, lombok.config, .github/workflows/12-backend-jacoco.yml]
   push:
-    branches: [ * ]
     paths: [src/**, pom.xml, lombok.config, .github/workflows/12-backend-jacoco.yml]
 
 jobs:
