@@ -1,6 +1,7 @@
 package com.tianleyu.github;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -56,6 +57,59 @@ public class GitHubAppTest {
                     .thenReturn(response);
             JSONObject appInfo = gitHubApp.appInfo();
             assertEquals("GitHub App", appInfo.getString("name"));
+        }
+    }
+
+    @Test
+    void testGitHubAppOrgFailed() throws Exception {
+        HttpResponse<Object> response = mock(HttpResponse.class);
+        when(response.statusCode()).thenReturn(404);
+        when(client.send(any(), any())).thenReturn(response);
+
+        try (MockedStatic<Utils> mockedUtils = mockStatic(Utils.class)) {
+            mockedUtils.when(() -> Utils.get(anyString(), anyString(), any(HttpClient.class)))
+                    .thenReturn(response);
+            assertThrows(GitHubAppException.class, () -> gitHubApp.org("abc"));
+        }
+    }
+
+    @Test
+    void testGitHubAppOrgOK() throws Exception {
+        HttpResponse<Object> response = mock(HttpResponse.class);
+        HttpResponse<Object> response2 = mock(HttpResponse.class);
+        when(response.statusCode()).thenReturn(200);
+        when(response.body()).thenReturn("{\"id\":\"2233\"}");
+        when(client.send(any(), any())).thenReturn(response);
+
+        when(response2.statusCode()).thenReturn(200);
+        when(response2.body()).thenReturn("{\"token\":\"1234\",\"expires_at\":\"2021-09-01T00:00:00Z\"}");
+
+        try (MockedStatic<Utils> mockedUtils = mockStatic(Utils.class)) {
+            mockedUtils.when(() -> Utils.get(anyString(), anyString(), any(HttpClient.class)))
+                    .thenReturn(response);
+            mockedUtils.when(() -> Utils.post(anyString(), anyString(), anyString(), any(HttpClient.class)))
+                    .thenReturn(response2);
+            GitHubAppOrg res = gitHubApp.org("abc");
+
+            Field instId = res.getClass().getDeclaredField("instId");
+            instId.setAccessible(true);
+
+            assertEquals(res.orgId, "abc");
+            assertEquals(instId.get(res), "2233");
+        }
+    }
+
+    @Test
+    void testPost() throws Exception {
+        HttpResponse<Object> response = mock(HttpResponse.class);
+        when(response.statusCode()).thenReturn(404);
+        when(client.send(any(), any())).thenReturn(response);
+
+        try (MockedStatic<Utils> mockedUtils = mockStatic(Utils.class)) {
+            mockedUtils.when(() -> Utils.post(anyString(), anyString(), anyString(), any(HttpClient.class)))
+                    .thenReturn(response);
+            HttpResponse<String> a = gitHubApp.post("/some/url", new JSONObject());
+            assertEquals(404, a.statusCode());
         }
     }
 
